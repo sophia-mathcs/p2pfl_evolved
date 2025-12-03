@@ -28,6 +28,8 @@ The `main` branch contains the baseline implementation using the standard P2PFL 
 
 The `communication` branch implements a smarter gossip protocol that enhances decentralized training by better handling asynchronous participants and heterogeneous update quality. 
 
+### `fault_tolerance` - Checkpoint Storage and Failure Recovery
+
 **All failure recovery related code is located in the `fault_tolerance` branch.**
 
 The `fault_tolerance` branch implements a comprehensive recovery mechanism that combines local and remote checkpoints, enabling failed nodes to seamlessly rejoin training and restore their model state. This enhancement significantly improves training continuity and system reliability.
