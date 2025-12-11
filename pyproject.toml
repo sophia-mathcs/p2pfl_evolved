@@ -1,0 +1,136 @@
+[project]
+name = "p2pfl"
+version = "0.4.4"
+description = "A p2p federated learning framework"
+authors = [{ name = "Pedro Guijas", email = "pguijas@gmail.com" }]
+requires-python = ">=3.10.0, <3.13"
+readme = "README.md"
+license = "GPL-3.0-only"
+keywords = [
+    "federated learning",
+    "fl",
+    "peer to peer",
+    "p2p",
+    "decentralized",
+    "data privacy",
+    "data security",
+    "pytorch",
+]
+dependencies = [
+    "grpcio>=1.62.0,<2",
+    "grpcio-tools>=1.62.0,<2",
+    "matplotlib>=3.8.3,<4",
+    "psutil>=5.9.8,<6",
+    "numpy>=1.20,<2.0",
+    "typer>=0.12.3,<0.13",
+    "ray>=2.43.0,<3",
+    "datasets==2.15.0",
+    "pandas>=2.2.3,<3",
+    "tqdm>=4.67.0,<5",
+    "protobuf>=5.29.1",
+    "pyyaml>=6.0.2,<7",
+    "click==8.1.8",
+]
+
+[project.optional-dependencies]
+torch = [
+    "torch>=2.2.1,<3",
+    "torchvision>=0.17.1,<0.18",
+    "torchmetrics>=1.3.1,<2",
+    "lightning>=2.4.0,<3",
+]
+tensorflow = [
+    "tensorflow>=2.18.0,<3",
+    "keras>=3.5.0,<4",
+    "types-tensorflow>=2.17.0.20240820,<3",
+]
+flax = ["flax>=0.10.0,<0.11"]
+dp = ["opendp>=0.13.0"]
+wandb = ["wandb>=0.20.1,<0.21"]
+
+[project.urls]
+Homepage = "https://p2pfl.com"
+Repository = "https://github.com/p2pfl/p2pfl"
+Documentation = "https://p2pfl.github.io/p2pfl/"
+
+[project.scripts]
+p2pfl = "p2pfl.management.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0,<9",
+    "pytest-cov>=5.0.0,<6",
+    "ruff>=0.5.1,<0.6",
+    "mypy>=1.15.0,<2",
+    "mypy-protobuf>=3.5.0,<4",
+    "types-protobuf>=5.27.0.20240626,<6",
+    "types-requests>=2.32.0.20240712,<3",
+    "ipykernel>=6.29.5,<7",
+    "pandas-stubs>=2.2.3.241126,<3",
+    "types-pyyaml>=6.0.12.20241230,<7",
+    "types-tqdm>=4.67.0.20241119,<5",
+]
+docs = [
+    "Sphinx>=7.0.0,<8",
+    "myst-parser>3",
+    "furo>=2025",
+    "sphinx-autodoc-typehints>=2.0.0,<2.5",
+    "sphinxcontrib-mermaid>=0.9.2,<0.10",
+    "sphinx-design>=0.6.1,<0.7",
+]
+
+[tool.uv]
+default-groups = [
+    "dev",
+    "docs",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 140
+exclude = ["p2pfl/communication/protocols/protobuff/proto", "docs"]
+
+[tool.ruff.lint]
+select = [
+    # docstring
+    "D",
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # Pycodestyle warnings
+    "W",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # comprehensions
+    "C4"
+]
+fixable = ["E", "F", "W", "B", "SIM", "I", "C4"]
+ignore = ["B027", "D203", "D212", "D406", "D407"]
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=p2pfl"
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.mypy]
+exclude = "p2pfl/proto"
+disallow_untyped_calls = true
+
+[[tool.mypy.overrides]]
+module = "grpc.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "torchvision.*"
+ignore_missing_imports = true

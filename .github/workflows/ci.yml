@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:  
+      - uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          uv lock
+          uv sync --all-extras
+
+      - name: Format (ruff)
+        run: |
+          uv run ruff format p2pfl
+
+      - name: Lint (ruff)
+        run: |
+          uv run ruff check p2pfl --output-format=github
+        continue-on-error: true
+
+      - name: Type checks (mypy)
+        run: |
+          uv run mypy -p p2pfl
+
+      - name: Generate certificates
+        run: |
+          cd p2pfl/certificates
+          bash gen-certs.sh
+
+      - name: Test (pytest)
+        run: |
+          source .venv/bin/activate
+          pytest -v --cov=p2pfl
+
+      - name: Coverage comment
+        id: coverage_comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Store Pull Request comment to be posted
+        uses: actions/upload-artifact@v4
+        if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+        with:
+          name: Coveragenator
+          path: python-coverage-comment-action.txt
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: logs
