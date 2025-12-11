@@ -5,7 +5,7 @@
 This project extends the original [P2PFL](https://github.com/p2pfl/p2pfl) framework with an **adaptive communication protocol** that intelligently manages model synchronization in peer-to-peer federated learning networks. The adaptive protocol enhances communication efficiency and model quality by dynamically adjusting communication strategies based on network conditions, model staleness, and neighbor interaction patterns.
 
 ## Key Features
-c
+
 ### 1. Versioned Model Updates
 
 Every model update in the network carries a **version field** that tracks the global training round. This enables nodes to:
